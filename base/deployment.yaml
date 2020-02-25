@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 3
+  template:
+    spec:
+      initContainers:
+        - name: vault-initcontainer
+          image: foo-bar-baz
+          envFrom:
+            - secretRef:
+                name: vault-services-properties
+          volumeMounts:
+            - name: data
+              mountPath: /opt/
+      containers:
+        - name: web
+          image: nginx:1.7.9
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: data
+          emptyDir: {}
